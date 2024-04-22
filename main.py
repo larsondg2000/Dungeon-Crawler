@@ -1,8 +1,8 @@
 import pygame
 from pygame import Surface
-
 import constants
 from character import Character
+from weapon import Weapon
 
 pygame.init()
 
@@ -11,7 +11,6 @@ pygame.display.set_caption("Dungeon Crawler")
 
 # Create clock for maintaining frame rate
 clock = pygame.time.Clock()
-
 
 # Define player movement variables
 moving_left = False
@@ -27,13 +26,15 @@ def scale_image(image, scale):
     return pygame.transform.scale(image, (w * scale, h * scale))
 
 
+# weapon images
+bow_image = scale_image(pygame.image.load("assets/images/weapons/bow.png").convert_alpha(), constants.WEAPONS_SCALE)
+
 # load character images
 mob_animations =[]
 mob_types = ['elf', 'imp', 'skeleton', 'goblin', 'muddy', 'tiny_zombie', 'big_demon']
-
 animation_types = ["idle", "run"]
+
 for mob in mob_types:
-    # Load images
     animation_list = []
     for animation in animation_types:
         # reset temp list of images
@@ -47,6 +48,9 @@ for mob in mob_types:
 
 # Create player
 player = Character(100, 100, mob_animations, 0)
+
+# Create player weapon
+bow = Weapon(bow_image)
 
 # Main game loop
 run = True
@@ -75,9 +79,11 @@ while run:
 
     # update player
     player.update()
+    bow.update(player)
 
     # Draw player
     player.draw(screen)
+    bow.draw(screen)
 
     # Event handler
     for event in pygame.event.get():
