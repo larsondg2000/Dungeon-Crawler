@@ -27,21 +27,26 @@ def scale_image(image, scale):
     return pygame.transform.scale(image, (w * scale, h * scale))
 
 
-animation_types = ["idle", "run"]
-animation_list = []
+# load character images
+mob_animations =[]
+mob_types = ['elf', 'imp', 'skeleton', 'goblin', 'muddy', 'tiny_zombie', 'big_demon']
 
-for animation in animation_types:
-    # reset temp list of images
-    temp_list = []
-    for i in range(4):
-        img = pygame.image.load(f"assets/images/characters/elf/{animation}/{i}.png").convert_alpha()
-        img = scale_image(img, constants.SCALE)
-        print(i)
-        temp_list.append(img)
-    animation_list.append(temp_list)
+animation_types = ["idle", "run"]
+for mob in mob_types:
+    # Load images
+    animation_list = []
+    for animation in animation_types:
+        # reset temp list of images
+        temp_list = []
+        for i in range(4):
+            img = pygame.image.load(f"assets/images/characters/{mob}/{animation}/{i}.png").convert_alpha()
+            img = scale_image(img, constants.SCALE)
+            temp_list.append(img)
+        animation_list.append(temp_list)
+    mob_animations.append(animation_list)
 
 # Create player
-player = Character(100, 100, animation_list)
+player = Character(100, 100, mob_animations, 0)
 
 # Main game loop
 run = True

@@ -4,7 +4,8 @@ import math
 
 
 class Character:
-    def __init__(self, x, y, animation_list):
+    def __init__(self, x, y, mob_animations, char_type):
+        self.char_type = char_type
         self.flip = False
         self.frame_index = 0
         self.action = 0   # 0: idle 1: running animations
@@ -12,8 +13,8 @@ class Character:
         self.running = False
         self.rect = pygame.Rect(0, 0, 40, 40)
         self.rect.center = (x, y)
-        self.animation_list = animation_list
-        self.image = animation_list[self.action][self.frame_index]
+        self.animation_list = mob_animations[char_type]
+        self.image = self.animation_list[self.action][self.frame_index]
 
     def move(self, dx, dy):
         self.running = False
