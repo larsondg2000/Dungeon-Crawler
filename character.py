@@ -19,7 +19,7 @@ class Character:
     def move(self, dx, dy):
         self.running = False
 
-        if dx != 0 or dy !=0:
+        if dx != 0 or dy != 0:
             self.running = True
 
         # sets character image flip
@@ -37,7 +37,7 @@ class Character:
 
     def update(self):
         # check action player is performing
-        if self.running == True:
+        if self.running is True:
             self.update_action(1)
         else:
             self.update_action(0)
@@ -59,7 +59,7 @@ class Character:
         # check if new action is different
         if new_action != self.action:
             self.action = new_action
-            # upadte the animation settings
+            # update the animation settings
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
 

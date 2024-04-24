@@ -1,5 +1,6 @@
 import pygame
 import math
+
 import constants
 
 
@@ -55,7 +56,6 @@ class Arrow(pygame.sprite.Sprite):
         # calculate horizontal and vertical speeds based on angle
         self.dx = math.cos(math.radians(self.angle)) * constants.ARROW_SPEED
         self.dy = -(math.sin(math.radians(self.angle)) * constants.ARROW_SPEED)
-
 
     def update(self):
         # reposition based on speed
