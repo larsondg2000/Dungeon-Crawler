@@ -4,13 +4,15 @@ import math
 
 
 class Character:
-    def __init__(self, x, y, mob_animations, char_type):
+    def __init__(self, x, y, health, mob_animations, char_type):
         self.char_type = char_type
         self.flip = False
         self.frame_index = 0
         self.action = 0   # 0: idle 1: running animations
         self.update_time = pygame.time.get_ticks()
         self.running = False
+        self.health = health
+        self.alive = True
         self.rect = pygame.Rect(0, 0, 40, 40)
         self.rect.center = (x, y)
         self.animation_list = mob_animations[char_type]
@@ -36,6 +38,11 @@ class Character:
         self.rect.y += dy
 
     def update(self):
+        # check if character has died
+        if self.health <= 0:
+            self.health = 0
+            self.alive = False
+
         # check action player is performing
         if self.running is True:
             self.update_action(1)
