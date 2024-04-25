@@ -6,6 +6,7 @@ import math
 class Character:
     def __init__(self, x, y, health, mob_animations, char_type):
         self.char_type = char_type
+        self.score = 0
         self.flip = False
         self.frame_index = 0
         self.action = 0   # 0: idle 1: running animations

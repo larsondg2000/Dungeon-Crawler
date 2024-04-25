@@ -3,7 +3,7 @@ import pygame
 import constants
 from character import Character
 from weapon import Weapon
-
+from items import Item
 pygame.init()
 
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
@@ -37,6 +37,16 @@ heart_half = scale_image(pygame.image.load("assets/images/items/heart_half.png")
 heart_full = scale_image(pygame.image.load("assets/images/items/heart_full.png").convert_alpha(),
                          constants.ITEM_SCALE)
 
+# Load coin images
+coin_images = []
+for x in range(4):
+    img = scale_image(pygame.image.load(f"assets/images/items/coin_f{x}.png").convert_alpha(),
+                      constants.ITEM_SCALE)
+    coin_images.append(img)
+
+# Load potion
+red_potion = scale_image(pygame.image.load("assets/images/items/potion_red.png").convert_alpha(),
+                         constants.POTION_SCALE)
 # weapon images
 bow_image = scale_image(pygame.image.load("assets/images/weapons/bow.png").convert_alpha(), constants.WEAPONS_SCALE)
 arrow_image = scale_image(pygame.image.load("assets/images/weapons/arrow.png").convert_alpha(), constants.WEAPONS_SCALE)
@@ -59,6 +69,12 @@ for mob in mob_types:
     mob_animations.append(animation_list)
 
 
+# function to output text on screen
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+
 # Game info function
 def draw_info():
     # Draw panel at the top for info display
@@ -75,9 +91,12 @@ def draw_info():
             half_heart_drawn = True
         else:
             screen.blit(heart_empty, (10 + idx * 50, 0))
-
+    # show score
+    draw_text(f"Score {player.score}", font, constants.WHITE, constants.SCREEN_WIDTH - 200, 15)
 
 # damage text class
+
+
 class DamageText(pygame.sprite.Sprite):
     def __init__(self, x, y, damage, color):
         pygame.sprite.Sprite.__init__(self)
@@ -111,6 +130,15 @@ enemy_list.append(enemy)
 # Create sprite groups
 damage_text_group = pygame.sprite.Group()
 arrow_group = pygame.sprite.Group()
+item_group = pygame.sprite.Group()
+
+score_coin = Item(constants.SCREEN_WIDTH - 215, 23, 0, coin_images)
+item_group.add(score_coin)
+
+potion = Item(200, 200, 1, [red_potion])
+item_group.add(potion)
+coin = Item(400, 400, 0, coin_images)
+item_group.add(coin)
 
 # Main game loop
 run = True
@@ -153,7 +181,9 @@ while run:
             damage_text_group.add(damage_text)
     damage_text_group.update()
 
-    # Draw player
+    item_group.update(player)
+
+    # Draw player on screen
     for enemy in enemy_list:
         enemy.draw(screen)
     player.draw(screen)
@@ -161,7 +191,9 @@ while run:
     for arrow in arrow_group:
         arrow.draw(screen)
     damage_text_group.draw(screen)
+    item_group.draw(screen)
     draw_info()
+    score_coin.draw(screen)
 
     # Event handler
     for event in pygame.event.get():
