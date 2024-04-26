@@ -14,10 +14,11 @@ class Character:
         self.running = False
         self.health = health
         self.alive = True
-        self.rect = pygame.Rect(0, 0, 40, 40)
-        self.rect.center = (x, y)
         self.animation_list = mob_animations[char_type]
+
         self.image = self.animation_list[self.action][self.frame_index]
+        self.rect = pygame.Rect(0, 0, constants.TILE_SIZE, constants.TILE_SIZE)
+        self.rect.center = (x, y)
 
     def move(self, dx, dy):
         self.running = False
