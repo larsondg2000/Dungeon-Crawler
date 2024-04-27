@@ -53,6 +53,11 @@ for x in range(4):
 # Load potion
 red_potion = scale_image(pygame.image.load("assets/images/items/potion_red.png").convert_alpha(),
                          constants.POTION_SCALE)
+
+item_images = []
+item_images.append(coin_images)
+item_images.append(red_potion)
+
 # weapon images
 bow_image = scale_image(pygame.image.load("assets/images/weapons/bow.png").convert_alpha(), constants.WEAPONS_SCALE)
 arrow_image = scale_image(pygame.image.load("assets/images/weapons/arrow.png").convert_alpha(), constants.WEAPONS_SCALE)
@@ -104,7 +109,10 @@ def draw_info():
             half_heart_drawn = True
         else:
             screen.blit(heart_empty, (10 + idx * 50, 0))
-    # show score
+    # Show level
+    draw_text("Level: " + str(level), font, constants.WHITE, constants.SCREEN_WIDTH / 2.2, 15)
+
+    # Show score
     draw_text(f"Score {player.score}", font, constants.WHITE, constants.SCREEN_WIDTH - 200, 15)
 
 
@@ -123,7 +131,7 @@ with open(f"levels/level{level}_data.csv", newline="") as csvfile:
             world_data[x][y] = int(tile)
 
 world = World()
-world.process_data(world_data, tile_list)
+world.process_data(world_data, tile_list, item_images, mob_animations)
 
 
 # damage text class
@@ -148,17 +156,13 @@ class DamageText(pygame.sprite.Sprite):
 
 
 # Create player
-player = Character(400, 300, 100, mob_animations, 0)
-
-# Create enemy
-enemy = Character(300, 300, 100, mob_animations, 1)
+player = world.player
 
 # Create player weapon
 bow = Weapon(bow_image, arrow_image)
 
-# Create empty enemy list
-enemy_list = []
-enemy_list.append(enemy)
+# Create enemy
+enemy_list = world.character_list
 
 # Create sprite groups
 damage_text_group = pygame.sprite.Group()
@@ -168,10 +172,9 @@ item_group = pygame.sprite.Group()
 score_coin = Item(constants.SCREEN_WIDTH - 215, 23, 0, coin_images, True)
 item_group.add(score_coin)
 
-potion = Item(200, 200, 1, [red_potion])
-item_group.add(potion)
-coin = Item(400, 400, 0, coin_images)
-item_group.add(coin)
+# add items for level data
+for item in world.item_list:
+    item_group.add(item)
 
 # Main game loop
 run = True
