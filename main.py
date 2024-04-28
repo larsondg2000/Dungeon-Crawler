@@ -52,7 +52,7 @@ for x in range(4):
 
 # Load potion
 red_potion = scale_image(pygame.image.load("assets/images/items/potion_red.png").convert_alpha(),
-                         constants.POTION_SCALE)
+                         constants.FIREBALL_SCALE)
 
 item_images = []
 item_images.append(coin_images)
@@ -61,6 +61,8 @@ item_images.append(red_potion)
 # weapon images
 bow_image = scale_image(pygame.image.load("assets/images/weapons/bow.png").convert_alpha(), constants.WEAPONS_SCALE)
 arrow_image = scale_image(pygame.image.load("assets/images/weapons/arrow.png").convert_alpha(), constants.WEAPONS_SCALE)
+fireball_image = scale_image(pygame.image.load("assets/images/weapons/fireball.png").convert_alpha(),
+                             constants.FIREBALL_SCALE)
 
 # Load tile map images
 tile_list = []
@@ -168,6 +170,7 @@ enemy_list = world.character_list
 damage_text_group = pygame.sprite.Group()
 arrow_group = pygame.sprite.Group()
 item_group = pygame.sprite.Group()
+fireball_group = pygame.sprite.Group()
 
 score_coin = Item(constants.SCREEN_WIDTH - 215, 23, 0, coin_images, True)
 item_group.add(score_coin)
@@ -206,8 +209,11 @@ while run:
 
     # iterate through enemy list
     for enemy in enemy_list:
-        enemy.ai(player, world.obstacle_tiles, screen_scroll)
-        enemy.update()
+        fireball = enemy.ai(player, world.obstacle_tiles, screen_scroll, fireball_image)
+        if fireball:
+            fireball_group.add(fireball)
+        if enemy.alive:
+            enemy.update()
 
     # update player
     player.update()
@@ -220,6 +226,7 @@ while run:
             damage_text = DamageText(damage_pos.centerx, damage_pos.y, str(damage), constants.RED)
             damage_text_group.add(damage_text)
     damage_text_group.update()
+    fireball_group.update(screen_scroll, player)
 
     item_group.update(screen_scroll, player)
 
@@ -235,6 +242,8 @@ while run:
 
     for arrow in arrow_group:
         arrow.draw(screen)
+    for fireball in fireball_group:
+        fireball.draw(screen)
     damage_text_group.draw(screen)
     item_group.draw(screen)
     draw_info()
