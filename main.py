@@ -204,8 +204,9 @@ while run:
     # Update world tiles
     world.update(screen_scroll)
 
-    # iterate through enemy list6
+    # iterate through enemy list
     for enemy in enemy_list:
+        enemy.ai(player, world.obstacle_tiles, screen_scroll)
         enemy.update()
 
     # update player
@@ -214,7 +215,7 @@ while run:
     if arrow:
         arrow_group.add(arrow)
     for arrow in arrow_group:
-        damage, damage_pos = arrow.update(screen_scroll, enemy_list)
+        damage, damage_pos = arrow.update(screen_scroll, world.obstacle_tiles, enemy_list)
         if damage:
             damage_text = DamageText(damage_pos.centerx, damage_pos.y, str(damage), constants.RED)
             damage_text_group.add(damage_text)
@@ -225,12 +226,13 @@ while run:
     # Draw world tiles
     world.draw(screen)
 
-    # Draw player on screen
+    # Draw player and enemy on screen
     for enemy in enemy_list:
-        enemy.ai(screen_scroll)
         enemy.draw(screen)
+
     player.draw(screen)
     bow.draw(screen)
+
     for arrow in arrow_group:
         arrow.draw(screen)
     damage_text_group.draw(screen)
