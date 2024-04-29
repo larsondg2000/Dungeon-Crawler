@@ -125,7 +125,7 @@ class FireBall(pygame.sprite.Sprite):
         if player.rect.colliderect(self.rect) and player.hit == False:
             player.hit = True
             player.last_hit = pygame.time.get_ticks()
-            player.health -= 5
+            player.health -= 0
             self.kill()
 
 

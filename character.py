@@ -26,8 +26,9 @@ class Character:
         self.rect = pygame.Rect(0, 0, constants.TILE_SIZE * size, constants.TILE_SIZE * size)
         self.rect.center = (x, y)
 
-    def move(self, dx, dy, obstacle_tiles):
+    def move(self, dx, dy, obstacle_tiles, exit_tile=None):
         screen_scroll = [0, 0]
+        level_complete = False
         self.running = False
 
         if dx != 0 or dy != 0:
@@ -62,6 +63,15 @@ class Character:
 
         # check if its player
         if self.char_type == 0:
+            # check collision with ladder
+            if exit_tile[1].colliderect(self.rect):
+
+                # ensure player is close to center of ladder
+                exit_dist = math.sqrt((((self.rect.centerx - exit_tile[1].centerx) **2) +
+                             ((self.rect.centery - exit_tile[1].centery) **2)))
+                if exit_dist < 20:
+                    level_complete = True
+
             # Left and right
             if self.rect.right > (constants.SCREEN_WIDTH - constants.SCROLL_THRESH):
                 screen_scroll[0] = (constants.SCREEN_WIDTH - constants.SCROLL_THRESH) - self.rect.right
@@ -77,7 +87,7 @@ class Character:
                 screen_scroll[1] = constants.SCROLL_THRESH - self.rect.top
                 self.rect.top = constants.SCROLL_THRESH
 
-        return screen_scroll
+        return screen_scroll, level_complete
 
     def ai(self, player, obstacle_tiles, screen_scroll, fireball_image):
         clipped_line = ()
@@ -116,7 +126,7 @@ class Character:
                 self.move(ai_dx, ai_dy, obstacle_tiles)
                 # Attack player
                 if dist < constants.ATTACK_RANGE and player.hit == False:
-                    player.health -= 10
+                    player.health -= 1
                     player.hit = True
                     player.last_hit = pygame.time.get_ticks()
                 # boss enemy shoots fireballs
@@ -147,7 +157,7 @@ class Character:
             self.alive = False
 
         # Timer to reset player taking hit
-        hit_cooldown = 1000
+        hit_cooldown = 1000000
         if self.char_type == 0:
             if self.hit is True and (pygame.time.get_ticks() - self.last_hit) > hit_cooldown:
                 self.hit = False
